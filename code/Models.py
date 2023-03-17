@@ -1,16 +1,17 @@
 import tensorflow as tf
 from keras.models import Model
 from keras.layers import Conv2D, Activation, MaxPooling2D, Dense, Flatten, Dropout, Concatenate, Input
-from PIL import Image
-
 
 class VGG16:
-	def __init__(self):
-		self.model = self.create_model()
+	def __init__(self,verbose=False):
+		self.verbose = verbose
 		self.history = None
 		self.feature_blocks = []
+		self.model = self.create_model()
 
-	def create_model(self):
+	def create_model(self, verbose = False):
+		if self.verbose or verbose:
+			print("Creating VGG16 Model...")
 		input_layer = Input(shape=(224,224,3))
 		conv_layer_1 = Conv2D(input_shape=(224,224,3),filters=64,kernel_size=(3,3),padding='same')(input_layer)
 		act_layer_1 = Activation(activation='relu')(conv_layer_1)
@@ -57,18 +58,32 @@ class VGG16:
 		act_layer_16 = Activation(activation='softmax')(dense_layer_3)
 
 		self.model = Model(inputs=input_layer,outputs=act_layer_16)
+		if self.verbose or verbose:
+			print("Model Successfully Created!")
 		return self.model
 
-	def compile(self,optimizer='Adam',loss='categorical_crossentropy',metrics=['accuracy']):
+	def compile(self,optimizer='Adam',loss='categorical_crossentropy',metrics=['accuracy'],verbose=False):
+		if self.verbose or verbose:
+			print("Compiling Model...")
 		self.model.compile(optimizer=optimizer,loss=loss,metrics=metrics)
+		if self.verbose or verbose:
+			print("Compilation Success!")
 		return self.model 
 
-	def train(self,x_train,y_train):
-		self.history = self.model.fit(x_train,y_train)
+	def train(self,x_train,y_train,verbose = True):
+		if self.verbose or verbose:
+			print('Now Training Model...')
+		self.history = self.model.fit(x_train,y_train,verbose=verbose)
+		if self.verbose or verbose:
+			print('Training Complete!')
 		return self.history
 
-	def evaluate(self,x_test,y_test):
-		loss, accuracy = self.model.evaluate(x_test,y_test)
+	def evaluate(self,x_test,y_test, verbose = True):
+		if self.verbose or verbose:
+			print("Evaluating Model...")
+		loss, accuracy = self.model.evaluate(x_test,y_test,verbose=verbose)
+		if self.verbose or verbose:
+			print("Evaluation Complete!")
 		return loss, accuracy 
 
 	def predict(self,sample):
@@ -79,8 +94,9 @@ class VGG16:
 		model_summary = self.model.summary()
 		return model_summary
 
-	def save(self,model_name=""):
+	def save(self,model_name="",verbose=True):
 		if(model_name == ""):
 			model_name = 'output_models/VGG16_' + str(round(self.history.history['accuracy'][0], 3)) + '.h5' 
 		self.model.save(model_name)
-		print("Model saved to " + model_name)
+		if self.verbose or verbose:
+			print("Model saved to " + model_name)

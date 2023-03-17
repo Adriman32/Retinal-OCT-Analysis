@@ -1,8 +1,9 @@
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
+
 from Models import VGG16
 from sklearn.model_selection import train_test_split
 from PIL import Image
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder
@@ -47,8 +48,7 @@ def  load_data(path):
 
 if __name__ == '__main__': 
     start_time = time.time()
-    # path = 'D:/Users/Adrian Ruvalcaba/Documents/School/2022-2023/Spring 2023/Independent Study/dataset/8kt969dhx6-1/temp_dataset/'
-    path = 'D:/Users/Adrian Ruvalcaba/Documents/School/2022-2023/Spring 2023/Independent Study/dataset/8kt969dhx6-1/NEH_UT_2021RetinalOCTDataset/NEH_UT_2021RetinalOCTDataset/'
+    path = "path/to/dataset/folder"
     img_array_list, img_labels = load_data(path)
     x_train, x_test, y_train, y_test = train_test_split(img_array_list, img_labels,random_state=42)
 
@@ -57,14 +57,10 @@ if __name__ == '__main__':
 
     my_model = VGG16()
     my_model.compile()
-    print('Now Training Model...')
-    history = my_model.train(x_train,y_train)
-    print('Training Complete!')
-    print('Evaluating Model using Test Set')
-    model_loss, model_accuracy = my_model.evaluate(x_test, y_test)
-    print('Evaluation Complete!')
+    history = my_model.train(x_train,y_train,verbose=False)
+    model_loss, model_accuracy = my_model.evaluate(x_test, y_test,verbose=False)
     print("--------------------------------------------------------------")
     print('Loss: %s\tAccuracy: %s'%(round(model_loss,4),round(model_accuracy,4)))
     print("--------------------------------------------------------------")
-    my_model.save()
+    my_model.save(verbose=False)
     print('Total Run Time: %s minutes'%(round((time.time()-start_time)/60,4)))
