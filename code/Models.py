@@ -3,13 +3,13 @@ from keras.models import Model
 from keras.layers import Conv2D, Activation, MaxPooling2D, Dense, Flatten, Dropout, Concatenate, Input
 
 class VGG16:
-	def __init__(self,verbose=False):
+	def __init__(self,num_classes, verbose=False):
 		self.verbose = verbose
 		self.history = None
 		self.feature_blocks = []
-		self.model = self.create_model()
+		self.model = self.create_model(num_classes)
 
-	def create_model(self, verbose = False):
+	def create_model(self, num_classes, verbose = False):
 		if self.verbose or verbose:
 			print("Creating VGG16 Model...")
 		input_layer = Input(shape=(224,224,3))
@@ -54,7 +54,7 @@ class VGG16:
 		act_layer_14 = Activation(activation='relu')(dense_layer_1)
 		dense_layer_2 = Dense(units=4096)(act_layer_14)
 		act_layer_15 = Activation(activation='relu')(dense_layer_2)
-		dense_layer_3 = Dense(units=4)(act_layer_15)
+		dense_layer_3 = Dense(units=num_classes)(act_layer_15)
 		act_layer_16 = Activation(activation='softmax')(dense_layer_3)
 
 		self.model = Model(inputs=input_layer,outputs=act_layer_16)

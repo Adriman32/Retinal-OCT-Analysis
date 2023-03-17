@@ -22,7 +22,7 @@ def  load_data(path):
                 if parsed_name[0] == 'OD' or parsed_name[0] == 'OS':
                     for os_od_filename in os.listdir(path+curr_class+'/'+patient_num+'/'+filename+'/'):
                         parsed_name = os_od_filename.split('_')
-                        img_label = parsed_name[1].split('.')[0]
+                        img_label = parsed_name[1].split('.')[0].lower()
                         img = Image.open(path+curr_class+'/'+patient_num+'/'+filename+'/'+os_od_filename).resize((224,224))
                         img_arr = np.asarray(img)
                         img_arr = img_arr.astype('float32') / 255.0
@@ -48,19 +48,19 @@ def  load_data(path):
 
 if __name__ == '__main__': 
     start_time = time.time()
-    path = "path/to/dataset/folder"
+    path = 'path/to/dataset/'
     img_array_list, img_labels = load_data(path)
     x_train, x_test, y_train, y_test = train_test_split(img_array_list, img_labels,random_state=42)
 
     x_train = tf.stack(x_train)
     x_test = tf.stack(x_test)
 
-    my_model = VGG16()
+    my_model = VGG16(num_classes = len(y_train[0]))
     my_model.compile()
-    history = my_model.train(x_train,y_train,verbose=False)
-    model_loss, model_accuracy = my_model.evaluate(x_test, y_test,verbose=False)
+    history = my_model.train(x_train,y_train)
+    model_loss, model_accuracy = my_model.evaluate(x_test, y_test)
     print("--------------------------------------------------------------")
     print('Loss: %s\tAccuracy: %s'%(round(model_loss,4),round(model_accuracy,4)))
     print("--------------------------------------------------------------")
-    my_model.save(verbose=False)
+    my_model.save()
     print('Total Run Time: %s minutes'%(round((time.time()-start_time)/60,4)))
