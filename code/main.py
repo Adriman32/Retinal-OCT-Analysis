@@ -27,14 +27,14 @@ def  load_data(path):
                         img_arr = np.asarray(img)
                         img_arr = img_arr.astype('float32') / 255.0
                         img_list.append(img_arr)
-                        label_list.append(img_label)
+                        label_list.append(img_label.lower())
                 else:
                     img_label = parsed_name[1].split('.')[0]
                     img = Image.open(path+str(curr_class)+'/'+str(patient_num)+'/'+filename).resize((224,224))
                     img_arr = np.asarray(img)
                     img_arr = img_arr.astype('float32') / 255.0
                     img_list.append(img_arr)
-                    label_list.append(img_label)
+                    label_list.append(img_label.lower())
 
     label_encoder = LabelEncoder()
     onehot_encoder = OneHotEncoder(sparse=False)
@@ -43,7 +43,7 @@ def  load_data(path):
     label_list = label_list.reshape(len(label_list), 1)
     label_list = onehot_encoder.fit_transform(label_list)
     print('Data loaded in %s minutes'%(round((time.time()-load_start)/60,4)))
-    return img_list,label_list
+    return np.asarray(img_list),label_list
 
 
 if __name__ == '__main__':
@@ -51,9 +51,6 @@ if __name__ == '__main__':
     path = 'D:/Users/Adrian Ruvalcaba/Documents/School/2022-2023/Spring 2023/Independent Study/Retinal-OCT-Analysis/dataset/8kt969dhx6-1/temp_dataset/'
     img_array_list, img_labels = load_data(path)
     x_train, x_test, y_train, y_test = train_test_split(img_array_list, img_labels,random_state=42)
-
-    x_train = tf.stack(x_train)
-    x_test = tf.stack(x_test)
 
     my_model = FPN_VGG16(num_classes = len(y_train[0]),verbose=True)
     my_model.compile()

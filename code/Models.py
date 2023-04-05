@@ -239,8 +239,8 @@ class FPN_VGG16:
 		if self.verbose or verbose:
 			print("Compiling Model...")
 
-		class_weights = {0: 0.26, 1: 0.29, 2: 0.45}
-		loss = keras.losses.CategoricalCrossentropy(class_weights)
+		# class_weights = {0: 0.26, 1: 0.29, 2: 0.45}
+		# loss = keras.losses.CategoricalCrossentropy(class_weights)
 
 		self.model.compile(optimizer=optimizer,loss=loss,metrics=metrics)
 		if self.verbose or verbose:
