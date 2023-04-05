@@ -1,7 +1,7 @@
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 
-from Models import VGG16
+from Models import *
 from sklearn.model_selection import train_test_split
 from PIL import Image
 import numpy as np
@@ -46,18 +46,19 @@ def  load_data(path):
     return img_list,label_list
 
 
-if __name__ == '__main__': 
+if __name__ == '__main__':
     start_time = time.time()
-    path = 'path/to/dataset/'
+    path = 'D:/Users/Adrian Ruvalcaba/Documents/School/2022-2023/Spring 2023/Independent Study/Retinal-OCT-Analysis/dataset/8kt969dhx6-1/temp_dataset/'
     img_array_list, img_labels = load_data(path)
     x_train, x_test, y_train, y_test = train_test_split(img_array_list, img_labels,random_state=42)
 
     x_train = tf.stack(x_train)
     x_test = tf.stack(x_test)
 
-    my_model = VGG16(num_classes = len(y_train[0]))
+    my_model = FPN_VGG16(num_classes = len(y_train[0]),verbose=True)
     my_model.compile()
-    history = my_model.train(x_train,y_train)
+    print(my_model.summary())
+    history = my_model.train(x_train,y_train,validation_data=(x_test,y_test),epochs=10,batch_size=16,verbose=1)
     model_loss, model_accuracy = my_model.evaluate(x_test, y_test)
     print("--------------------------------------------------------------")
     print('Loss: %s\tAccuracy: %s'%(round(model_loss,4),round(model_accuracy,4)))
