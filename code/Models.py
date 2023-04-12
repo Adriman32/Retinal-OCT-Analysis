@@ -145,9 +145,8 @@ class FPN_VGG16:
 		input_layer = Input(shape=(224,224,3))
 		conv_layer_1 = Conv2D(input_shape=(224,224,3),filters=64,kernel_size=(3,3),padding='same')(input_layer)
 		act_layer_1 = Activation(activation='relu')(conv_layer_1)
-		conv_layer_2 = Conv2D(filters=64, kernel_size=(3,3),padding='same')(act_layer_1)
-		act_layer_2 = Activation(activation='relu')(conv_layer_2)
-		max_pool_layer_1 = MaxPooling2D(pool_size=(2,2),strides=(2,2))(act_layer_2)
+		
+		max_pool_layer_1 = MaxPooling2D(pool_size=(2,2),strides=(2,2))(act_layer_1)
 
 		conv_layer_3 = Conv2D(filters=128,kernel_size=(3,3),padding='same')(max_pool_layer_1)
 		act_layer_3 = Activation(activation='relu')(conv_layer_3)
@@ -182,51 +181,68 @@ class FPN_VGG16:
 
 		# Feature Fusion using FPN
 		ff_conv_layer_1 = Conv2D(filters=256,kernel_size=(1,1),padding='same')(max_pool_layer_1)
+		act_layer_14 = Activation(activation='relu')(ff_conv_layer_1)
 		ff_conv_layer_2 = Conv2D(filters=256,kernel_size=(1,1),padding='same')(max_pool_layer_2)
-		ff_upsample_layer_1 = UpSampling2D(size=(2,2))(ff_conv_layer_2)
-		ff_add_layer_1 = Add()([ff_conv_layer_1,ff_upsample_layer_1])
+		act_layer_15 = Activation(activation='relu')(ff_conv_layer_2)
+		ff_upsample_layer_1 = UpSampling2D(size=(2,2))(act_layer_15)
+		ff_add_layer_1 = Add()([act_layer_14,ff_upsample_layer_1])
 
 		ff_conv_layer_3 = Conv2D(filters=256,kernel_size=(1,1),padding='same')(max_pool_layer_3)
-		ff_upsample_layer_2 = UpSampling2D(size=(2,2))(ff_conv_layer_3)
-		ff_add_layer_2 = Add()([ff_conv_layer_2,ff_upsample_layer_2])
+		act_layer_16 = Activation(activation='relu')(ff_conv_layer_3)
+		ff_upsample_layer_2 = UpSampling2D(size=(2,2))(act_layer_16)
+		ff_add_layer_2 = Add()([act_layer_15,ff_upsample_layer_2])
 
 		ff_conv_layer_4 = Conv2D(filters=256,kernel_size=(1,1),padding='same')(max_pool_layer_4)
-		ff_upsample_layer_3 = UpSampling2D(size=(2,2))(ff_conv_layer_4)
-		ff_add_layer_3 = Add()([ff_conv_layer_3,ff_upsample_layer_3])
+		act_layer_17 = Activation(activation='relu')(ff_conv_layer_4)
+		ff_upsample_layer_3 = UpSampling2D(size=(2,2))(act_layer_17)
+		ff_add_layer_3 = Add()([act_layer_16,ff_upsample_layer_3])
 
 		ff_conv_layer_5 = Conv2D(filters=256,kernel_size=(1,1),padding='same')(max_pool_layer_5)
-		ff_upsample_layer_4 = UpSampling2D(size=(2,2))(ff_conv_layer_5)
-		ff_add_layer_4 = Add()([ff_conv_layer_4,ff_upsample_layer_4])
+		act_layer_18 = Activation(activation='relu')(ff_conv_layer_5)
+		ff_upsample_layer_4 = UpSampling2D(size=(2,2))(act_layer_18)
+		ff_add_layer_4 = Add()([act_layer_17,ff_upsample_layer_4])
 
 
 		# Forming Scale-Representative Feature Maps
 		ff_conv_layer_6 = Conv2D(filters=256,kernel_size=(3,3),padding='same')(ff_add_layer_1)
-		ff_conv_layer_7 = Conv2D(filters=256,kernel_size=(3,3),padding='same')(ff_conv_layer_6)
-		avg_pool_layer_1 = GlobalAveragePooling2D()(ff_conv_layer_7)
+		act_layer_19 = Activation(activation='relu')(ff_conv_layer_6)
+		ff_conv_layer_7 = Conv2D(filters=256,kernel_size=(3,3),padding='same')(act_layer_19)
+		act_layer_20 = Activation(activation='relu')(ff_conv_layer_7)
+		avg_pool_layer_1 = GlobalAveragePooling2D()(act_layer_20)
 
 		ff_conv_layer_8 = Conv2D(filters=256,kernel_size=(3,3),padding='same')(ff_add_layer_2)
-		ff_conv_layer_9 = Conv2D(filters=256,kernel_size=(3,3),padding='same')(ff_conv_layer_8)
-		avg_pool_layer_2 = GlobalAveragePooling2D()(ff_conv_layer_9)
+		act_layer_21 = Activation(activation='relu')(ff_conv_layer_8)
+		ff_conv_layer_9 = Conv2D(filters=256,kernel_size=(3,3),padding='same')(act_layer_21)
+		act_layer_22 = Activation(activation='relu')(ff_conv_layer_9)
+		avg_pool_layer_2 = GlobalAveragePooling2D()(act_layer_22)
 
 		ff_conv_layer_10 = Conv2D(filters=256,kernel_size=(3,3),padding='same')(ff_add_layer_3)
-		ff_conv_layer_11 = Conv2D(filters=256,kernel_size=(3,3),padding='same')(ff_conv_layer_10)
-		avg_pool_layer_3 = GlobalAveragePooling2D()(ff_conv_layer_11)
+		act_layer_23 = Activation(activation='relu')(ff_conv_layer_10)
+		ff_conv_layer_11 = Conv2D(filters=256,kernel_size=(3,3),padding='same')(act_layer_23)
+		act_layer_24 = Activation(activation='relu')(ff_conv_layer_11)
+		avg_pool_layer_3 = GlobalAveragePooling2D()(act_layer_24)
 
 		ff_conv_layer_12 = Conv2D(filters=256,kernel_size=(3,3),padding='same')(ff_add_layer_4)
-		ff_conv_layer_13 = Conv2D(filters=256,kernel_size=(3,3),padding='same')(ff_conv_layer_12)
-		avg_pool_layer_4 = GlobalAveragePooling2D()(ff_conv_layer_13)
+		act_layer_25 = Activation(activation='relu')(ff_conv_layer_12)
+		ff_conv_layer_13 = Conv2D(filters=256,kernel_size=(3,3),padding='same')(act_layer_25)
+		act_layer_26 = Activation(activation='relu')(ff_conv_layer_13)
+		avg_pool_layer_4 = GlobalAveragePooling2D()(act_layer_26)
 
-		ff_conv_layer_14 = Conv2D(filters=256,kernel_size=(3,3),padding='same')(ff_conv_layer_5)
-		ff_conv_layer_15 = Conv2D(filters=256,kernel_size=(3,3),padding='same')(ff_conv_layer_14)
-		avg_pool_layer_5 = GlobalAveragePooling2D()(ff_conv_layer_15)
+		ff_conv_layer_14 = Conv2D(filters=256,kernel_size=(3,3),padding='same')(act_layer_18)
+		act_layer_27 = Activation(activation='relu')(ff_conv_layer_14)
+		ff_conv_layer_15 = Conv2D(filters=256,kernel_size=(3,3),padding='same')(act_layer_27)
+		act_layer_28 = Activation(activation='relu')(ff_conv_layer_15)
+		avg_pool_layer_5 = GlobalAveragePooling2D()(act_layer_28)
 
 		# Concatenating the Scale-Representative Feature Maps
 		concat_layer_1 = Concatenate()([avg_pool_layer_1,avg_pool_layer_2,avg_pool_layer_3,avg_pool_layer_4,avg_pool_layer_5])
 
 		# Classification Layer
 		dense_layer_1 = Dense(units=1280)(concat_layer_1)
-		dense_layer_2 = Dense(units=512)(dense_layer_1)
-		dropout_layer_1 = Dropout(rate=0.5)(dense_layer_2)
+		act_layer_29 = Activation(activation='relu')(dense_layer_1)
+		dense_layer_2 = Dense(units=512)(act_layer_29)
+		act_layer_30 = Activation(activation='relu')(dense_layer_2)
+		dropout_layer_1 = Dropout(rate=0.5)(act_layer_30)
 		dense_layer_3 = Dense(units=num_classes,activation='softmax')(dropout_layer_1)
 
 		# Creating Model
@@ -239,8 +255,8 @@ class FPN_VGG16:
 		if self.verbose or verbose:
 			print("Compiling Model...")
 
-		# class_weights = {0: 0.26, 1: 0.29, 2: 0.45}
-		# loss = keras.losses.CategoricalCrossentropy(class_weights)
+		
+		# loss = keras.losses.CategoricalCrossentropy(from_logits=False,class_weights)
 
 		self.model.compile(optimizer=optimizer,loss=loss,metrics=metrics)
 		if self.verbose or verbose:
@@ -250,7 +266,8 @@ class FPN_VGG16:
 	def train(self,x_train, y_train, epochs=10, batch_size=16, validation_data=None,verbose = False):
 		if self.verbose or verbose:
 			print('Now Training Model...')
-		self.history = self.model.fit(x_train, y_train, epochs=epochs, batch_size=batch_size, validation_data=validation_data,callbacks=[self.cb],verbose=verbose)
+		class_weights = {0: 0.26, 1: 0.29, 2: 0.45}
+		self.history = self.model.fit(x_train, y_train, epochs=epochs, batch_size=batch_size, validation_data=validation_data,callbacks=[self.cb],verbose=verbose,class_weight=class_weights)
 		if self.verbose or verbose:
 			print('Training Complete!')
 		return self.history
@@ -280,7 +297,7 @@ class FPN_VGG16:
 
 	def setup_cbs(self):
 		cb_list = []
-		# cb_list.append(self.setup_early_stopping_cb())
+		cb_list.append(self.setup_early_stopping_cb())
 		cb_list.append(self.setup_tensorboard_cb())
 		return cb_list
 
